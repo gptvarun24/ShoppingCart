@@ -3,9 +3,12 @@ package com.ShoppingCart.Service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ShoppingCart.Domain.Order;
 import com.ShoppingCart.Entity.Item;
 import com.ShoppingCart.Exception.ShoppingCartException;
 import com.ShoppingCart.Mapper.ItemMapping;
@@ -72,5 +75,30 @@ public class ShoppingCartService {
 			throw new ShoppingCartException("Item details not found");
 		}
 		
+	}
+	
+	@Transactional
+	public String placeOrder(List<Order> orderList)
+	{
+		for(Order order : orderList)
+		{
+			Optional<Item> optionalItem = cartRepository.findById(order.getItemId());
+			if(optionalItem.isPresent())
+			{  
+				Item dbItem = optionalItem.get();
+				if(dbItem.getQuantity()<order.getQuantity())
+				{
+					throw new ShoppingCartException("Item not present in sufficient quantity");
+				}else {
+					dbItem.setQuantity(dbItem.getQuantity()-order.getQuantity());
+					cartRepository.save(dbItem);
+				}
+				
+			}else
+			{
+				throw new ShoppingCartException("Item details not found");
+			}
+		}
+		return "Order placed successfully" ;
 	}
 }

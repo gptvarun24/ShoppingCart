@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ShoppingCart.Domain.Order;
 import com.ShoppingCart.Entity.Item;
 import com.ShoppingCart.Mapper.ItemMapping;
 import com.ShoppingCart.Service.ShoppingCartService;
@@ -51,6 +52,13 @@ public class Controller {
 		return new ResponseEntity<>(items,HttpStatus.OK);
 	}
 	
+	@PostMapping("/placeOrder")
+	public ResponseEntity<String> placeOrder(@RequestBody List<Order> orderList)
+	{
+		String response = cartService.placeOrder(orderList);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+
 	
 	@PostMapping("/deleteItem/{id}")
 	public ResponseEntity<String> deleteItem(@PathVariable int id)
