@@ -59,6 +59,12 @@ public class Controller {
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 
+	@PostMapping("/cancelOrder")
+	public ResponseEntity<String> cancelOrder(@RequestBody List<Order> orderList)
+	{
+		String response = cartService.cancelOrder(orderList);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
 	
 	@PostMapping("/deleteItem/{id}")
 	public ResponseEntity<String> deleteItem(@PathVariable int id)

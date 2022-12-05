@@ -101,4 +101,24 @@ public class ShoppingCartService {
 		}
 		return "Order placed successfully" ;
 	}
+	
+	@Transactional
+	public String cancelOrder(List<Order> orderList)
+	{
+		for(Order order : orderList)
+		{
+			Optional<Item> optionalItem = cartRepository.findById(order.getItemId());
+			if(optionalItem.isPresent())
+			{  
+				Item dbItem = optionalItem.get();
+				dbItem.setQuantity(dbItem.getQuantity()+order.getQuantity());
+				cartRepository.save(dbItem);
+				
+			}else
+			{
+				throw new ShoppingCartException("Item details not found");
+			}
+		}
+		return "Order cancelled successfully" ;
+	}
 }
